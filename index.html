@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>325数字论证器</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6; 
+            --bg-color: #f8fafc; 
+            --glory-gold: #dec358; 
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.8s ease; 
+        }
+
+        body.glorious-active {
+            background-color: var(--glory-gold);
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            width: 90%;
+            max-width: 600px;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            margin: 0 0 30px 0;
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        input[type="number"] {
+            width: 80%;
+            max-width: 300px;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            background-color: #f8fafc;
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .result-box {
+            background-color: #f1f5f9;
+            padding: 25px 20px;
+            border-radius: 12px;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            border: 1px dashed #cbd5e1;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .result-header {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            /* 保护数字和等号绝对不被换行切断 */
+            word-break: keep-all; 
+            white-space: nowrap;
+        }
+
+        .result-formula {
+            width: 100%;
+            text-align: center; 
+            font-size: 1.2rem; 
+            line-height: 1.6;
+            color: var(--text-main);
+            word-break: break-all; 
+            max-height: 300px; 
+            overflow-y: auto;
+            background: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .placeholder {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .error {
+            color: #ef4444;
+            font-size: 1rem;
+        }
+
+        .highlight {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* 325释义 */
+        .faq-module {
+            width: 90%;
+            max-width: 600px;
+            margin-top: 25px; 
+            background-color: var(--card-bg); 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); 
+            text-align: center;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .faq-module:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .faq-module summary {
+            padding: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-main);
+            cursor: pointer;
+            user-select: none;
+            list-style: none;
+            position: relative; 
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .faq-module summary:hover {
+            background-color: #f8fafc; 
+        }
+
+        .faq-module summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-content {
+            padding: 0 30px 25px 30px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            text-align: left;
+            border-top: 1px dashed #cbd5e1;
+            margin: 0 20px;
+            padding-top: 20px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>325 论证器</h1>
+        <p class="subtitle">数字325化工具</p>
+        
+        <div class="input-group">
+            <input type="number" id="numInput" placeholder="请输入任意数字..." autocomplete="off" autofocus>
+        </div>
+
+        <div id="resultBox" class="result-box">
+            <span class="placeholder">社畜读报中...</span>
+        </div>
+        
+    </div>
+
+    <details class="faq-module">
+            <summary>所以325是什么意思🤔</summary>
+            <div class="faq-content">
+                <p><strong>325</strong>出自明日方舟up主<strong>魔法ZC目录</strong>2024年3月11日的直播，彼时由龙哥哥今天又鸽了主办的明日方舟集成战略民间赛事仙术杯第五届正在如火如荼地展开中。本届仙术杯采取团队赛的形式，ZC 代表冠军厨小队的第二位出战，使用科学分队焰影苇草开。但由于临场过于紧张运气Maybe和肉鸽基础不够扎实等原因在第三层关底利刃所指暴毙，局内结算<strong>325</strong>分。</p>
+            </div>
+        </details>
+
+    <script src="zc325.js"></script>
+    
+    <script>
+        const inputElement = document.getElementById('numInput');
+        const resultElement = document.getElementById('resultBox');
+
+        inputElement.addEventListener('input', (e) => {
+            const rawValue = e.target.value;
+
+            if (rawValue.trim() === '') {
+                resultElement.innerHTML = '<span class="placeholder">社畜读报中...</span>';
+                document.body.classList.remove('glorious-active');
+                return;
+            }
+
+            document.body.classList.add('glorious-active');
+
+            const num = Number(rawValue);
+
+            try {
+                const expr = zc325(num);
+                
+                if (expr.includes("我们的")) {
+                    resultElement.innerHTML = `<span class="error">${expr}</span>`;
+                } else {
+                    resultElement.innerHTML = `
+                        <div class="result-header"><span class="highlight">${num}</span> =</div>
+                        <div class="result-formula">${expr}</div>
+                    `;
+                }
+            } catch (err) {
+                resultElement.innerHTML = `<span class="error">论证超载：${err.message}</span>`;
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+</html>
