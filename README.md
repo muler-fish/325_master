@@ -1,7 +1,11 @@
 # 325数字论证器
 将任意数字分解为由 325 构成的公式
 
-## 快速使用
+## 项目首页
+
+[https://muler-fish.github.io/325_master/](https://muler-fish.github.io/325_master/)
+
+## 本地使用
 
 本项目为纯静态前端项目，无需任何 Node.js 或数据库环境配置。
 
